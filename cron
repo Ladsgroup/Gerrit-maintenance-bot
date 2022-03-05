@@ -1,0 +1,2 @@
+5 * * * * jlocal bash /data/project/phabbot/phabbot/updater.sh >/dev/null 2>&1
+
