@@ -2,6 +2,7 @@
 {% block content %}
 Making lots of gerrit patches
 <ul class="list-group">
+    {% if username %}
     <li class="list-group-item">
         <a href="/php">Php tools</a>
         <ul class="list-group">
@@ -13,5 +14,9 @@ Making lots of gerrit patches
             </li>
         </ul>
     </li>
+    <li class="list-group-item"><a href="/auth/logout">Logout</a></li>
+    {% else %}
+    <li class="list-group-item"><a href="/auth/login">Login</a></li>
+    {% endif %}
 </ul>
 {% endblock %}

@@ -1,2 +1,6 @@
-Flask==1.1.2
+Flask==2.1.0
 requests==2.23.0
+mwoauth
+markupsafe>=1.1.1,<2.1.0
+flask-session
+
