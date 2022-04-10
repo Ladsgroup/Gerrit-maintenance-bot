@@ -2,4 +2,4 @@ Host gerrit.wikimedia.org
     Port 29418
     IdentitiesOnly yes
     User gerritbot
-    IdentityFile ~/Gerrit-maintenance-bot/private_key
+    IdentityFile ~/Gerrit-maintenance-bot/lsc/patch_maker/private_key

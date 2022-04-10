@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <form action="/php/const-replace" method="post">
+        <div class="form-group">
+            <label for="oldclass">Old class (FQN)</label>
+            <input type="text" id="oldclass" name="oldclass" placeholder="ApiBase" required class="form-control">
+            <label for="old">Old const(s)</label>
+            <input type="text" id="old" name="old" placeholder="PARAM_(.+?)\W" required class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="newclass">New class (FQN)</label>
+            <input type="text" id="newclass" name="newclass" placeholder="Wikimedia\ParamValidator\ParamValidator" required class="form-control">
+            <label for="new">New const(s)</label>
+            <input type="text" id="new" name="new" placeholder="PARAM_\1\W" required class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">Get repos</button>
+    </form>
+{% endblock %}

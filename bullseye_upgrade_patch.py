@@ -1,7 +1,7 @@
 import re
 import sys
 
-from gerrit import GerritBot
+from lsc.patch_maker.gerrit import GerritBot
 
 
 class PuppetDisableNotificationPatchMaker(GerritBot):

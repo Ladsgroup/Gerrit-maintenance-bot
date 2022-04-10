@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    table {
+        padding: 1em;
+        background-color: #f8f9fa;
+        color: #000;
+        margin-top: 5px;
+    }
+    td > .diff_chg, td > .diff_add, td > .diff_sub {
+        background-color: #fc3;
+    }
+    .form-check-input {
+        width: 25px;
+        height: 25px;
+    }
+    .repo-title {
+        margin-left: 30px;
+    }
+    textarea#commitmessage {
+        height: 200px;
+    }
+</style>
+    <form action="/php/const-replace" method="post">
+        <div class="form-group">
+            <label for="oldclass">Old class (FQN)</label>
+            <input type="text" id="oldclass" name="oldclass" value="{{oldclass}}" readonly class="form-control">
+            <label for="old">Old const(s)</label>
+            <input type="text" id="old" name="old" value="{{old}}" readonly class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="newclass">New class (FQN)</label>
+            <input type="text" id="newclass" name="newclass" value="{{newclass}}" readonly class="form-control">
+            <label for="new">New const(s)</label>
+            <input type="text" id="new" name="new" value="{{new}}" readonly class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="commitmessage">Commit message (don't add ticket)</label>
+            <textarea id="commitmessage" name="commitmessage" required class="form-control"></textarea>
+            <label for="new">Ticket</label>
+            <input type="text" id="ticket" name="ticket" required placeholder="T12345" class="form-control">
+        </div>
+        {% for repo, res in suggestions.items() %}
+        <hr>
+        <input class="form-check-input" type="checkbox" id="{{ repo }}" name="{{ repo }}" checked> <h3 class="repo-title">{{ repo }}</h3>
+        {% for diff in res %}
+        <a href="https://gerrit.wikimedia.org/g/{{repo}}/+/master/{{diff[0]}}">{{ diff[0] }}</a>
+        <br>
+        {{ diff[1]|safe}}
+        {% endfor %}
+        {% endfor %}
+        <hr>
+        <button type="submit" class="btn btn-primary">Run</button>
+    </form>
+{% endblock %}

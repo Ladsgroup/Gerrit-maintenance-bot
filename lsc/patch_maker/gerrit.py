@@ -96,8 +96,10 @@ class ShellMixin:
         ]
         self.check_call(args)
 
-    def build_push_command(self, options: dict) -> list:
+    def build_push_command(self, options: dict, ticket='') -> list:
         per = '%topic=lsc'
+        if ticket:
+            per += '-' + ticket
         for hashtag in options.get('hashtags', []):
             per += ',t=' + hashtag
         if options.get('vote'):
@@ -112,9 +114,10 @@ class ShellMixin:
 
 
 class GerritBot(ShellMixin):
-    def __init__(self, name, commit_message):
+    def __init__(self, name, commit_message, ticket):
         self.name = name
         self.commit_message = commit_message
+        self.ticket = ticket
 
     def run(self):
         with tempfile.TemporaryDirectory() as tmpdirname:
@@ -141,7 +144,7 @@ class GerritBot(ShellMixin):
             f.write(self.commit_message)
         self.check_call(['git', 'commit', '-F', '.git/COMMIT_EDITMSG'])
         self.check_call(
-            self.build_push_command({'repo': self.name})
+            self.build_push_command({'repo': self.name}, ticket=self.ticket)
         )
 
 
