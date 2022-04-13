@@ -25,14 +25,6 @@ from contextlib import contextmanager
 dir_path = os.path.dirname(os.path.realpath(__file__))
 with open(os.path.join(dir_path, 'gerrit-creds.json'), 'r') as f:
     creds = json.loads(f.read())
-ssh_config = os.path.join(dir_path, 'ssh_config')
-
-
-def load_ssh_key():
-    mixin = ShellMixin()
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    mixin.check_call(
-        ['ssh-add', os.path.join(dir_path, 'private_key')])
 
 
 @contextmanager
@@ -45,9 +37,12 @@ def cd(dirname):
         os.chdir(cwd)
 
 
-def gerrit_url(repo: str, user=None, ssh=False) -> str:
+def gerrit_url(repo: str, user=None, ssh=False, password=None) -> str:
     if user is not None:
-        prefix = user + '@'
+        prefix = user
+        if password is not None:
+            prefix += ':' + password
+        prefix += '@'
     else:
         prefix = ''
     if ssh:
@@ -60,10 +55,8 @@ class ShellMixin:
     def check_call(self, args: list, stdin='', env=None,
                    ignore_returncode=False) -> str:
         debug = self.log if hasattr(self, 'log') else print
-        debug('$ ' + ' '.join(args) + ' env: ' + str(env))
+        #debug('$ ' + ' '.join(args) + ' env: ' + str(env))
         env = None
-        if 'push' in args:
-            env = {'GIT_SSH_COMMAND': 'ssh -F ' + ssh_config}
         res = subprocess.run(
             args,
             input=stdin.encode(),
@@ -83,18 +76,9 @@ class ShellMixin:
         self.check_call(['git', 'config', 'user.name', creds['name']])
         self.check_call(['git', 'config', 'user.email', creds['email']])
         self.check_call(['git', 'submodule', 'update', '--init'])
-        load_ssh_key()
-        args = [
-            'scp',
-            '-F',
-            ssh_config,
-            '-p',
-            '-P',
-            '29418',
-            creds['name'] + '@gerrit.wikimedia.org:hooks/commit-msg',
-            '.git/hooks/'
-        ]
-        self.check_call(args)
+        self.check_call(['mkdir', '-p', '.git/hooks'])
+        self.check_call(['curl', '-Lo', '.git/hooks/commit-msg', 'https://gerrit.wikimedia.org/r/tools/hooks/commit-msg'])
+        self.check_call(['chmod', '+x', '.git/hooks/commit-msg'])
 
     def build_push_command(self, options: dict, ticket='') -> list:
         per = '%topic=lsc'
@@ -109,7 +93,7 @@ class ShellMixin:
             per += ',m=' + urllib.parse.quote_plus(options['message'])
         branch = options.get('branch', 'master')
         return ['git', 'push',
-                gerrit_url(options['repo'], creds['name'], ssh=True),
+                gerrit_url(options['repo'], creds['name'], password=creds['password']),
                 'HEAD:refs/for/' + branch + per]
 
 
