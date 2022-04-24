@@ -3,6 +3,7 @@ import os
 from functools import wraps
 
 import flask
+from lsc.web_util import handle_replace_request
 import mwoauth
 from flask import Flask, render_template, request
 from flask_session import Session
@@ -91,8 +92,8 @@ def index():
 
 
 @app.route("/php", methods=['GET'])
-def bacc():
-    return render_template('php.html')
+def php():
+    return render_template('home.html', username=flask.session.get('username'))
 
 
 @app.route("/php/simple-replace", methods=['GET'])
@@ -104,25 +105,13 @@ def php_simple_replace():
 def php_simple_replace_post():
     old = request.form['old'].strip()
     new = request.form['new'].strip()
-    ticket = request.form.get('ticket')
-    commit_message = request.form.get('commitmessage')
     replacebot = SimpleReplaceBot(old, new, 'php')
-    repos = []
-    for key in request.form:
-        if key.startswith('mediawiki/') and request.form[key] == 'on':
-            repos.append(key)
-    if not repos or not ticket or not commit_message:
-        return render_template(
-            'php_simple_replace_with_repos.html',
-            old=old,
-            new=new,
-            suggestions=replacebot.get_suggestions()
-        )
-    if flask.session['username'] not in app.config['allowed_users']:
-        return flask.redirect(flask.url_for('index'))
-    return render_template(
-        'done.html',
-        result=replacebot.run(repos, ticket, commit_message)
+    return handle_replace_request(
+        replacebot,
+        'php_simple_replace_with_repos.html',
+        request.form,
+        flask.session.get('username'),
+        app.config['allowed_users']
     )
 
 
@@ -137,27 +126,13 @@ def php_const_replace_post():
     oldclass = request.form['oldclass'].strip()
     new = request.form['new'].strip()
     newclass = request.form['newclass'].strip()
-    ticket = request.form.get('ticket')
-    commit_message = request.form.get('commitmessage')
     replacebot = PhpConstReplaceBot(old, new, oldclass, newclass)
-    repos = []
-    for key in request.form:
-        if key.startswith('mediawiki/') and request.form[key] == 'on':
-            repos.append(key)
-    if not repos or not ticket or not commit_message:
-        return render_template(
-            'php_const_replace_with_repos.html',
-            old=old,
-            oldclass=oldclass,
-            new=new,
-            newclass=newclass,
-            suggestions=replacebot.get_suggestions()
-        )
-    if flask.session['username'] not in app.config['allowed_users']:
-        return flask.redirect(flask.url_for('index'))
-    return render_template(
-        'done.html',
-        result=replacebot.run(repos, ticket, commit_message)
+    return handle_replace_request(
+        replacebot,
+        'php_const_replace_with_repos.html',
+        request.form,
+        flask.session.get('username'),
+        app.config['allowed_users']
     )
 
 

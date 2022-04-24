@@ -51,24 +51,27 @@ class ReplaceBot(object):
                 yield (match, repo)
 
 
-    def run(self, repos, ticket, commit_message):
+    def run(self, repos, ticket, commit_message, commit_footer = '', username = ''):
         cases = defaultdict(list)
         for case in self.get_matches(repos):
             match, repo = case
             file_name = match['Filename']
             cases[repo].append(file_name)
+        if commit_footer:
+            commit_footer = '\n' + commit_footer.strip('\n')
         
         for repo in cases:
             patch_maker = replace_patch_maker.ReplacePatchMaker(
                 repo,
-                commit_message.strip('\n').strip() + '\n\nBug: ' + ticket, 
+                commit_message.strip('\n').strip() + '\n\nBug: ' + ticket + commit_footer, 
                 cases[repo],
                 self,
-                ticket
+                ticket,
+                username
             )
             patch_maker.run()
 
-        return 'Done?'
+        return 'Done?<br><a href="https://gerrit.wikimedia.org/r/q/topic:%2522lsc-{}%2522">See the result</a>'.format(ticket)
 
 
 class SimpleReplaceBot(ReplaceBot):
