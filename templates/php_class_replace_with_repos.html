@@ -6,6 +6,7 @@
         background-color: #f8f9fa;
         color: #000;
         margin-top: 5px;
+        width: 100%;
     }
     td > .diff_chg, td > .diff_add, td > .diff_sub {
         background-color: #fc3;
@@ -14,6 +15,9 @@
         width: 25px;
         height: 25px;
     }
+    td:nth-child(3), tr:nth-child(6) {
+        width: 48%;
+    }
     .repo-title {
         margin-left: 30px;
     }
@@ -21,18 +25,14 @@
         height: 200px;
     }
 </style>
-    <form action="/php/const-replace" method="post">
+    <form action="/php/class-replace" method="post">
         <div class="form-group">
             <label for="oldclass">Old class (FQN)</label>
             <input type="text" id="oldclass" name="oldclass" value="{{form.oldclass}}" readonly class="form-control">
-            <label for="old">Old const(s)</label>
-            <input type="text" id="old" name="old" value="{{form.old}}" readonly class="form-control">
         </div>
         <div class="form-group">
             <label for="newclass">New class (FQN)</label>
             <input type="text" id="newclass" name="newclass" value="{{form.newclass}}" readonly class="form-control">
-            <label for="new">New const(s)</label>
-            <input type="text" id="new" name="new" value="{{form.new}}" readonly class="form-control">
         </div>
         <div class="form-group">
             <label for="commitmessage">Commit message (don't add ticket)</label>

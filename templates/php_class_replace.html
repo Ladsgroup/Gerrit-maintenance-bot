@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <form action="/php/class-replace" method="post">
+        <div class="form-group">
+            <label for="oldclass">Old class (FQN)</label>
+            <input type="text" id="oldclass" name="oldclass" placeholder="FeedItem" required class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="newclass">New class (FQN)</label>
+            <input type="text" id="newclass" name="newclass" placeholder="MediaWiki\Feed\FeedItem" required class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">Get repos</button>
+    </form>
+{% endblock %}

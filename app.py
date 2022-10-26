@@ -3,13 +3,14 @@ import os
 from functools import wraps
 
 import flask
-from lsc.web_util import handle_replace_request
 import mwoauth
 from flask import Flask, render_template, request
 from flask_session import Session
 
+from lsc.php_class_replace import PhpClassReplaceBot
 from lsc.php_const_replace import PhpConstReplaceBot
 from lsc.replacebot import SimpleReplaceBot
+from lsc.web_util import handle_replace_request
 
 app = Flask(__name__)
 app = flask.Flask(__name__)
@@ -135,6 +136,23 @@ def php_const_replace_post():
         app.config['allowed_users']
     )
 
+@app.route("/php/class-replace", methods=['GET'])
+def php_class_replace():
+    return render_template('php_class_replace.html')
+
+
+@app.route("/php/class-replace", methods=['POST'])
+def php_class_replace_post():
+    oldclass = request.form['oldclass'].strip()
+    newclass = request.form['newclass'].strip()
+    replacebot = PhpClassReplaceBot(oldclass, newclass)
+    return handle_replace_request(
+        replacebot,
+        'php_class_replace_with_repos.html',
+        request.form,
+        flask.session.get('username'),
+        app.config['allowed_users']
+    )
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
