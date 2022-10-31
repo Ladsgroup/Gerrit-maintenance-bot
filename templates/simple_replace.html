@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-    <form action="/php/simple-replace" method="post">
+    <form action="/{{lang}}/simple-replace" method="post">
         <div class="form-group">
             <label for="old">Old text</label>
             <input type="text" id="old" name="old" required class="form-control">

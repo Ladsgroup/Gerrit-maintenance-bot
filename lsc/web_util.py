@@ -14,7 +14,8 @@ def handle_replace_request(replacebot, template_name, form, username, allowed_us
             template_name,
             form=form,
             suggestions=replacebot.get_suggestions(),
-            allow=username in allowed_users
+            allow=username in allowed_users,
+            lang=replacebot.language
         )
     if not re.search(r'^T\d+$', ticket):
         return render_template(

@@ -99,7 +99,7 @@ def php():
 
 @app.route("/php/simple-replace", methods=['GET'])
 def php_simple_replace():
-    return render_template('php_simple_replace.html')
+    return render_template('simple_replace.html', lang='php')
 
 
 @app.route("/php/simple-replace", methods=['POST'])
@@ -109,7 +109,7 @@ def php_simple_replace_post():
     replacebot = SimpleReplaceBot(old, new, 'php')
     return handle_replace_request(
         replacebot,
-        'php_simple_replace_with_repos.html',
+        'simple_replace_with_repos.html',
         request.form,
         flask.session.get('username'),
         app.config['allowed_users']
@@ -118,7 +118,7 @@ def php_simple_replace_post():
 
 @app.route("/php/const-replace", methods=['GET'])
 def php_const_replace():
-    return render_template('php_const_replace.html')
+    return render_template('php/const_replace.html')
 
 
 @app.route("/php/const-replace", methods=['POST'])
@@ -130,7 +130,7 @@ def php_const_replace_post():
     replacebot = PhpConstReplaceBot(old, new, oldclass, newclass)
     return handle_replace_request(
         replacebot,
-        'php_const_replace_with_repos.html',
+        'php/const_replace_with_repos.html',
         request.form,
         flask.session.get('username'),
         app.config['allowed_users']
@@ -138,7 +138,7 @@ def php_const_replace_post():
 
 @app.route("/php/class-replace", methods=['GET'])
 def php_class_replace():
-    return render_template('php_class_replace.html')
+    return render_template('php/class_replace.html')
 
 
 @app.route("/php/class-replace", methods=['POST'])
@@ -148,7 +148,30 @@ def php_class_replace_post():
     replacebot = PhpClassReplaceBot(oldclass, newclass)
     return handle_replace_request(
         replacebot,
-        'php_class_replace_with_repos.html',
+        'php/class_replace_with_repos.html',
+        request.form,
+        flask.session.get('username'),
+        app.config['allowed_users']
+    )
+
+@app.route("/less", methods=['GET'])
+def less():
+    return render_template('home.html', username=flask.session.get('username'))
+
+
+@app.route("/less/simple-replace", methods=['GET'])
+def less_simple_replace():
+    return render_template('simple_replace.html', lang='less')
+
+
+@app.route("/less/simple-replace", methods=['POST'])
+def less_simple_replace_post():
+    old = request.form['old'].strip()
+    new = request.form['new'].strip()
+    replacebot = SimpleReplaceBot(old, new, 'less')
+    return handle_replace_request(
+        replacebot,
+        'simple_replace_with_repos.html',
         request.form,
         flask.session.get('username'),
         app.config['allowed_users']
