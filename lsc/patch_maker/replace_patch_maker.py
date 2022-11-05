@@ -2,6 +2,7 @@ from .gerrit import GerritBot
 
 username_mapping = {
     'DKinzler (WMF)': 'daniel-kinzler',
+    'Volker E. (WMF)': 'volker-e'
 }
 
 
@@ -23,7 +24,7 @@ class ReplacePatchMaker(GerritBot):
     def normalized_username(self):
         if self.username in username_mapping:
             return username_mapping[self.username].lower()
-        return self.username.lower()
+        return self.username.lower().replace(' ', '_')
 
     def commit(self):
         self.check_call(['git', 'add', '.'])
