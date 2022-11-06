@@ -93,6 +93,7 @@ def index():
 
 
 @app.route("/php", methods=['GET'])
+@app.route("/php/", methods=['GET'])
 def php():
     return render_template('home.html', username=flask.session.get('username'))
 
@@ -155,6 +156,7 @@ def php_class_replace_post():
     )
 
 @app.route("/less", methods=['GET'])
+@app.route("/less/", methods=['GET'])
 def less():
     return render_template('home.html', username=flask.session.get('username'))
 
@@ -169,6 +171,30 @@ def less_simple_replace_post():
     old = request.form['old'].strip()
     new = request.form['new'].strip()
     replacebot = SimpleReplaceBot(old, new, 'less')
+    return handle_replace_request(
+        replacebot,
+        'simple_replace_with_repos.html',
+        request.form,
+        flask.session.get('username'),
+        app.config['allowed_users']
+    )
+
+@app.route("/css", methods=['GET'])
+@app.route("/css/", methods=['GET'])
+def css():
+    return render_template('home.html', username=flask.session.get('username'))
+
+
+@app.route("/css/simple-replace", methods=['GET'])
+def css_simple_replace():
+    return render_template('simple_replace.html', lang='css')
+
+
+@app.route("/css/simple-replace", methods=['POST'])
+def css_simple_replace_post():
+    old = request.form['old'].strip()
+    new = request.form['new'].strip()
+    replacebot = SimpleReplaceBot(old, new, 'css')
     return handle_replace_request(
         replacebot,
         'simple_replace_with_repos.html',
