@@ -8,6 +8,19 @@ username_mapping = {
     'Volker E. (WMF)': 'volker-e'
 }
 
+def bump_minimum_version_in_json(bump_version, content):
+    requires = content.get('requires', {})
+    ver = requires.get('MediaWiki', '>= 1.0.0').split(' ')[-1]
+    if bump_version.count('.') < 2:
+        bump_version += '.0'
+    if ver.count('.') < 2:
+        ver += '.0'
+    if version.parse(bump_version) <= version.parse(ver):
+        return
+    requires['MediaWiki'] = '>= ' + bump_version
+    content['requires'] = requires
+    return content
+
 
 class ReplacePatchMaker(GerritBot):
     def __init__(self, repo, commit_message, files, replacer, ticket, username, bump_version):
@@ -57,16 +70,7 @@ class ReplacePatchMaker(GerritBot):
                 break
         else:
             return
-        requires = content.get('requires', {}).get('MediaWiki', '>= 1.0.0')
-        ver = requires.split(' ')[-1]
-        if self.bump_version.count('.') < 2:
-            self.bump_version += '.0'
-        if ver.count('.') < 2:
-            ver += '.0'
-        if version.parse(self.bump_version) <= version.parse(ver):
-            return
-        requires['MediaWiki'] = '>= ' + self.bump_version
-        content['requires'] = requires
+        content = bump_minimum_version_in_json(self.bump_version, content)
 
         with open(actual_file_name, 'w') as f:
             f.write(json.dumps(content, indent='\t'))

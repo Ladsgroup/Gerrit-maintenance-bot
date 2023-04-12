@@ -38,11 +38,9 @@ class ReplaceBot(object):
         raise NotImplementedError
 
     def get_matches(self, repos=[]):
+        url = 'https://codesearch.wmcloud.org/deployed/api/v1/search?stats=fosho&repos=*&files=\\.{}&rng=%3A&q={}&files=&excludeFiles=&i=nope'
         q = urllib.parse.quote(self.old, safe="")
-        data = requests.get(
-            'https://codesearch.wmcloud.org/deployed/api/v1/search?stats=fosho&repos=*&files=\\.{}&rng=%3A&q={}&files=&excludeFiles=&i=nope'.format(
-                self.language,
-                q)).json()
+        data = requests.get(url.format(self.language, q)).json()
         suggestions = {}
         for repo in data['Results']:
             if repos and repo not in repos:

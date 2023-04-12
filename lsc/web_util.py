@@ -11,6 +11,7 @@ def handle_replace_request(
     ticket = form.get('ticket', '').strip()
     commit_message = form.get('commitmessage')
     commit_footer = form.get('commitfooter')
+    bumpversion = form.get('bumpversion', '').strip()
     repos = []
     for key in form:
         if key.startswith('mediawiki/') and form[key] == 'on':
@@ -28,6 +29,11 @@ def handle_replace_request(
             'done.html',
             result='The ticket does not follow the correct pattern'
         )
+    if bumpversion != '0' and not re.search(r'^1\.\d\d(\.\d\d?)?$', bumpversion):
+        return render_template(
+            'done.html',
+            result='The bump version does not follow the correct pattern'
+        )
     if username not in allowed_users:
         return redirect(url_for('index'))
     return render_template(
@@ -37,4 +43,5 @@ def handle_replace_request(
             ticket,
             commit_message,
             commit_footer,
-            username))
+            username,
+            bumpversion))
