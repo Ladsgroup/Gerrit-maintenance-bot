@@ -3,4 +3,4 @@ requests==2.23.0
 mwoauth
 markupsafe>=1.1.1,<2.1.0
 flask-session
-
+packaging

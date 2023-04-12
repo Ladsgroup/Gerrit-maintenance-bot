@@ -137,6 +137,7 @@ def php_const_replace_post():
         app.config['allowed_users']
     )
 
+
 @app.route("/php/class-replace", methods=['GET'])
 def php_class_replace():
     return render_template('php/class_replace.html')
@@ -154,6 +155,7 @@ def php_class_replace_post():
         flask.session.get('username'),
         app.config['allowed_users']
     )
+
 
 @app.route("/less", methods=['GET'])
 @app.route("/less/", methods=['GET'])
@@ -179,6 +181,7 @@ def less_simple_replace_post():
         app.config['allowed_users']
     )
 
+
 @app.route("/css", methods=['GET'])
 @app.route("/css/", methods=['GET'])
 def css():
@@ -202,6 +205,7 @@ def css_simple_replace_post():
         flask.session.get('username'),
         app.config['allowed_users']
     )
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')

@@ -1,7 +1,13 @@
 import re
 from flask import redirect, render_template, url_for
 
-def handle_replace_request(replacebot, template_name, form, username, allowed_users):
+
+def handle_replace_request(
+        replacebot,
+        template_name,
+        form,
+        username,
+        allowed_users):
     ticket = form.get('ticket', '').strip()
     commit_message = form.get('commitmessage')
     commit_footer = form.get('commitfooter')
@@ -19,12 +25,16 @@ def handle_replace_request(replacebot, template_name, form, username, allowed_us
         )
     if not re.search(r'^T\d+$', ticket):
         return render_template(
-        'done.html',
-        result='The ticket does not follow the correct pattern'
-    )
+            'done.html',
+            result='The ticket does not follow the correct pattern'
+        )
     if username not in allowed_users:
         return redirect(url_for('index'))
     return render_template(
         'done.html',
-        result=replacebot.run(repos, ticket, commit_message, commit_footer, username)
-    )
+        result=replacebot.run(
+            repos,
+            ticket,
+            commit_message,
+            commit_footer,
+            username))

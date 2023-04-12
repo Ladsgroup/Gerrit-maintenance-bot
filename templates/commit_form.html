@@ -1,0 +1,15 @@
+<style>
+textarea#commitmessage {
+    height: 200px;
+}
+</style>
+<div class="form-group">
+    <label for="commitmessage">Commit message (don't add ticket)</label>
+    <textarea id="commitmessage" name="commitmessage" required class="form-control"></textarea>
+    <label for="ticket">Ticket</label>
+    <input type="text" id="ticket" name="ticket" required placeholder="T12345" class="form-control">
+    <label for="commitfooter">Commit footer ("Depends-On", etc.)</label>
+    <textarea id="commitfooter" name="commitfooter" class="form-control"></textarea>
+    <label for="bumpversion">Bump minimum required MediaWiki core version in extension.json (0 to disable)</label>
+    <input type="text" pattern="0|1\.\d\d" id="bumpversion" name="bumpversion" required placeholder="1.40" class="form-control">
+</div>

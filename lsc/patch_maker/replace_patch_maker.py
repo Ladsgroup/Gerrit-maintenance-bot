@@ -1,3 +1,6 @@
+import json
+from collections import OrderedDict
+from packaging import version
 from .gerrit import GerritBot
 
 username_mapping = {
@@ -7,14 +10,17 @@ username_mapping = {
 
 
 class ReplacePatchMaker(GerritBot):
-    def __init__(self, repo, commit_message, files, replacer, ticket, username):
+    def __init__(self, repo, commit_message, files, replacer, ticket, username, bump_version):
         self.replacer = replacer
         self.files = files
         self.ticket = ticket
         self.username = username
+        self.bump_version = bump_version
         super().__init__(repo, commit_message, ticket)
 
     def changes(self):
+        if self.bump_version and self.bump_version != '0':
+            self._bump_minimum_version()
         for file in self.files:
             with open(file, 'r') as f:
                 content = f.read()
@@ -37,3 +43,30 @@ class ReplacePatchMaker(GerritBot):
                 'hashtags': ['lsc', 'lsc-requested-by-' + self.normalized_username()]
             },
             self.ticket))
+    
+    def _bump_minimum_version(self):
+        for file_name in ['extension.json', 'skin.json']:
+            try:
+                with open(file_name, 'r') as f:
+                    content = json.loads(f.read(), object_pairs_hook=OrderedDict)
+            except:
+                continue
+            else:
+                # Todo: Better name, I'm too tired right now
+                actual_file_name = file_name
+                break
+        else:
+            return
+        requires = content.get('requires', {}).get('MediaWiki', '>= 1.0.0')
+        ver = requires.split(' ')[-1]
+        if self.bump_version.count('.') < 2:
+            self.bump_version += '.0'
+        if ver.count('.') < 2:
+            ver += '.0'
+        if version.parse(self.bump_version) <= version.parse(ver):
+            return
+        requires['MediaWiki'] = '>= ' + self.bump_version
+        content['requires'] = requires
+
+        with open(actual_file_name, 'w') as f:
+            f.write(json.dumps(content, indent='\t'))

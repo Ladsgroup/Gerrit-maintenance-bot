@@ -17,9 +17,6 @@
     .repo-title {
         margin-left: 30px;
     }
-    textarea#commitmessage {
-        height: 200px;
-    }
 </style>
     <form action="/{{lang}}/simple-replace" method="post">
         <div class="form-group">
@@ -30,14 +27,7 @@
             <label for="new">New text</label>
             <input type="text" id="new" name="new" readonly value="{{form.new}}" class="form-control">
         </div>
-        <div class="form-group">
-            <label for="commitmessage">Commit message (don't add ticket)</label>
-            <textarea id="commitmessage" name="commitmessage" required class="form-control"></textarea>
-            <label for="ticket">Ticket</label>
-            <input type="text" id="ticket" name="ticket" required placeholder="T12345" class="form-control">
-            <label for="commitfooter">Commit footer ("Depends-On", etc.)</label>
-            <textarea id="commitfooter" name="commitfooter" class="form-control"></textarea>
-        </div>
+        {% include 'commit_form.html' %}
         {% for repo, res in suggestions.items() %}
         <hr>
         <input class="form-check-input" type="checkbox" id="{{ repo }}" name="{{ repo }}" checked> <h3 class="repo-title">{{ repo }}</h3>
