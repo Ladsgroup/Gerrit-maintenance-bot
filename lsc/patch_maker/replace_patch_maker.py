@@ -16,7 +16,7 @@ def bump_minimum_version_in_json(bump_version, content):
     if ver.count('.') < 2:
         ver += '.0'
     if version.parse(bump_version) <= version.parse(ver):
-        return
+        return content
     requires['MediaWiki'] = '>= ' + bump_version
     content['requires'] = requires
     return content
@@ -73,4 +73,4 @@ class ReplacePatchMaker(GerritBot):
         content = bump_minimum_version_in_json(self.bump_version, content)
 
         with open(actual_file_name, 'w') as f:
-            f.write(json.dumps(content, indent='\t'))
+            f.write(json.dumps(content, indent='\t', ensure_ascii=False) + '\n')

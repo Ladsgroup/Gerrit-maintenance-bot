@@ -31,7 +31,7 @@
             <label for="new">New const(s)</label>
             <input type="text" id="new" name="new" value="{{form.new}}" readonly class="form-control">
         </div>
-        {% include '../commit_form.html' %}
+        {% include 'commit_form.html' %}
         {% for repo, res in suggestions.items() %}
         <hr>
         <input class="form-check-input" type="checkbox" id="{{ repo }}" name="{{ repo }}" checked> <h3 class="repo-title">{{ repo }}</h3>
