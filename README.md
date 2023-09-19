@@ -1,3 +1,3 @@
-# Gerrit-maintenance-bot
+# [MOVED] Gerrit-maintenance-bot
 
-Automating making patches in gerrit
+Please use https://gitlab.wikimedia.org/ladsgroup/lsc
